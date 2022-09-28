@@ -1,0 +1,80 @@
+---
+title: "PM566-lab06-Tiansheng-Jin"
+author: "Tiansheng Jin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include  = FALSE)
+```
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+```
+
+Read in the mts data
+
+```{r cache = TRUE}
+if (!file.exists("mtsamples.csv"))
+  download.file(
+    url = "https://raw.githubusercontent.com/USCbiostats/data-science-data/master/00_mtsamples/mtsamples.csv",
+    destfile = "mtsamples.csv",
+    method   = "libcurl",
+    timeout  = 60
+    )
+mts <- read.csv("mtsamples.csv")
+str(mts)
+mts <- as_tibble(mts)
+mts
+```
+
+# Question 1: What specialties do we have?
+We can use count() from dplyr to figure out how many different categories do we have? Are these categories related? overlapping? evenly distributed?
+
+```{r medical-specialties}
+mts %>%
+  count(medical_specialty)
+```
+
+# Question 2
+Tokenize the the words in the transcription column
+Count the number of times each token appears
+Visualize the top 20 most frequent words
+Explain what we see from this result. Does it makes sense? What insights (if any) do we get?
+
+```{r}
+
+```
+
+# Question 3
+Redo visualization but remove stopwords before
+Bonus points if you remove numbers as well
+What do we see know that we have removed stop words? Does it give us a better idea of what the text is about?
+
+```{r}
+
+```
+
+# Question 4
+repeat question 2, but this time tokenize into bi-grams. how does the result change if you look at tri-grams?
+
+```{r}
+
+```
+
+# Question 5
+Using the results you got from questions 4. Pick a word and count the words that appears after and before it.
+
+```{r}
+
+```
+
+# Question 6
+Which words are most used in each of the specialties. you can use group_by() and top_n() from dplyr to have the calculations be done within each specialty. Remember to remove stopwords. How about the most 5 used words?
+
+```{r}
+
+```
