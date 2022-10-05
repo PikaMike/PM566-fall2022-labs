@@ -366,7 +366,21 @@ pre code {
 </div>
 
 
+<div id="question-1" class="section level1">
+<h1>Question 1</h1>
+<pre class="r"><code># Downloading the website
+website &lt;- xml2::read_html(&quot;https://pubmed.ncbi.nlm.nih.gov/?term=sars-cov-2&quot;)
 
+# Finding the counts
+counts &lt;- xml2::xml_find_first(website, &quot;/html/body/main/div[9]/div[2]/div[2]/div[1]&quot;)
+
+# Turning it into text
+counts &lt;- as.character(counts)
+
+# Extracting the data using regex
+stringr::str_extract(counts, &quot;[0-9,]+&quot;)</code></pre>
+<pre><code>## [1] &quot;179,021&quot;</code></pre>
+</div>
 
 
 
