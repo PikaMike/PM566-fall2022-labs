@@ -1,0 +1,45 @@
+---
+title: "PM566-lab09-Tiansheng-Jin"
+author: "Tiansheng Jin"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+
+```{r}
+library(parallel)
+```
+
+## Problem 2
+
+```{r}
+
+set.seed(156)
+
+fun1 <- function(n = 100, k = 4, lambda = 4) {
+  x <- NULL
+  
+  for (i in 1:n)
+    x <- rbind(x, rpois(k, lambda))
+  
+  return(x)
+}
+f1 <- fun1(100, 4)
+mean(f1)
+f1 <- fun1(1000, 4)
+f1 <- fun1(10000, 4)
+f1 <- fun1(50000, 4)
+
+fun1alt <- function(n = 100, k = 4, lambda = 4) {
+  x <- matrix(rpois(n*k, lambda) , ncol = 4)
+}
+
+# Benchmarking
+microbenchmark::microbenchmark(
+  fun1(),
+  fun1alt()
+)
+```
