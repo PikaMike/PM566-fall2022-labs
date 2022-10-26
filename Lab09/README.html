@@ -367,8 +367,11 @@ pre code {
 
 
 <pre class="r"><code>library(parallel)</code></pre>
-<div id="problem-2" class="section level2">
-<h2>Problem 2</h2>
+<div id="problem-2" class="section level1">
+<h1>Problem 2</h1>
+<div id="this-function-generates-a-n-x-k-dataset-with-all-its-entries-distributed-poission-with-mean-lambda." class="section level2">
+<h2>1.This function generates a n x k dataset with all its entries
+distributed poission with mean lambda.</h2>
 <pre class="r"><code>set.seed(156)
 
 fun1 &lt;- function(n = 100, k = 4, lambda = 4) {
@@ -398,9 +401,113 @@ microbenchmark::microbenchmark(
 <pre><code>## Warning in microbenchmark::microbenchmark(fun1(), fun1alt()): less accurate
 ## nanosecond times to avoid potential integer overflows</code></pre>
 <pre><code>## Unit: microseconds
-##       expr     min      lq      mean  median       uq     max neval
-##     fun1() 161.253 198.481 208.14470 209.182 219.4730 261.375   100
-##  fun1alt()  12.833  13.776  25.11291  14.432  16.6665 995.029   100</code></pre>
+##       expr     min       lq      mean  median      uq     max neval
+##     fun1() 157.727 185.4225 197.74669 198.768 206.189 263.179   100
+##  fun1alt()  12.997  13.8785  23.80706  14.596  15.662 875.186   100</code></pre>
+</div>
+<div id="find-the-column-max-hint-checkout-the-function-max.col." class="section level2">
+<h2>2.Find the column max (hint: Checkout the function max.col()).</h2>
+<pre class="r"><code># Data Generating Process (3 x 4 matrix)
+set.seed(156)
+M &lt;- matrix(runif(12), nrow=4)
+
+# Find each column&#39;s max value
+fun2 &lt;- function(y) {
+  apply(y, 2, max)
+}
+fun2(y=M)</code></pre>
+<pre><code>## [1] 0.7061012 0.5870727 0.9189349</code></pre>
+<pre class="r"><code>fun2alt &lt;- function(y) {
+  idx &lt;- max.col(t(y))
+  idx
+  # y[cbind(idx,1:4)]
+}
+fun2alt(y=M)</code></pre>
+<pre><code>## [1] 4 1 1</code></pre>
+<pre class="r"><code>y &lt;- matrix(rnorm(1e4), ncol = 10)
+
+# Benchmarking
+microbenchmark::microbenchmark(
+  fun2(y),
+  fun2alt(y)
+)</code></pre>
+<pre><code>## Unit: microseconds
+##        expr    min      lq      mean  median      uq     max neval
+##     fun2(y) 84.501 90.1795 100.15111 92.2910 97.1905 678.673   100
+##  fun2alt(y) 46.535 48.0520  56.78541 48.8105 52.2135 618.813   100</code></pre>
+</div>
+</div>
+<div id="problem-3-parallelize-everything" class="section level1">
+<h1>Problem 3: Parallelize everything</h1>
+<pre class="r"><code>my_boot &lt;- function(dat, stat, R, ncpus = 1L) {
+  
+  # Getting the random indices
+  n &lt;- nrow(dat)
+  idx &lt;- matrix(sample.int(n, n*R, TRUE), nrow=n, ncol=R)
+ 
+  # Making the cluster using `ncpus`
+  # STEP 1: GOES HERE
+  cl &lt;- makePSOCKcluster(4)
+  clusterSetRNGStream(cl, 123)
+  
+  # STEP 2: GOES HERE
+  clusterExport(cl, c(&quot;stat&quot;, &quot;dat&quot;, &quot;idx&quot;), envir = environment())
+  
+  # STEP 3: THIS FUNCTION NEEDS TO BE REPLACES WITH parLapply
+  ans &lt;- lapply(seq_len(R), function(i) {
+    stat(dat[idx[,i], , drop=FALSE])
+  })
+  
+  # Coercing the list into a matrix
+  ans &lt;- do.call(rbind, ans)
+  
+  # STEP 4: GOES HERE
+  
+  ans
+  
+}</code></pre>
+<div id="use-the-previous-pseudocode-and-make-it-work-with-parallel.-here-is-just-an-example-for-you-to-try" class="section level2">
+<h2>1.Use the previous pseudocode, and make it work with parallel. Here
+is just an example for you to try:</h2>
+<pre class="r"><code># Bootstrap of an OLS
+my_stat &lt;- function(d) coef(lm(y ~ x, data=d))
+
+# DATA SIM
+set.seed(1)
+n &lt;- 500; R &lt;- 1e4
+
+x &lt;- cbind(rnorm(n)); y &lt;- x*5 + rnorm(n)
+
+# Checking if we get something similar as lm
+ans0 &lt;- confint(lm(y~x))
+ans1 &lt;- my_boot(dat = data.frame(x, y), my_stat, R = R, ncpus = 2L)
+
+# You should get something like this
+t(apply(ans1, 2, quantile, c(.025,.975)))</code></pre>
+<pre><code>##                   2.5%      97.5%
+## (Intercept) -0.1386903 0.04856752
+## x            4.8685162 5.04351239</code></pre>
+<pre class="r"><code>##                   2.5%      97.5%
+## (Intercept) -0.1372435 0.05074397
+## x            4.8680977 5.04539763
+ans0</code></pre>
+<pre><code>##                  2.5 %     97.5 %
+## (Intercept) -0.1379033 0.04797344
+## x            4.8650100 5.04883353</code></pre>
+<pre class="r"><code>##                  2.5 %     97.5 %
+## (Intercept) -0.1379033 0.04797344
+## x            4.8650100 5.04883353</code></pre>
+</div>
+<div id="check-whether-your-version-actually-goes-faster-than-the-non-parallel-version" class="section level2">
+<h2>2.Check whether your version actually goes faster than the
+non-parallel version:</h2>
+<pre class="r"><code>system.time(my_boot(dat = data.frame(x, y), my_stat, R = 4000, ncpus = 1L))</code></pre>
+<pre><code>##    user  system elapsed 
+##   1.202   0.027   1.359</code></pre>
+<pre class="r"><code>system.time(my_boot(dat = data.frame(x, y), my_stat, R = 4000, ncpus = 2L))</code></pre>
+<pre><code>##    user  system elapsed 
+##   1.175   0.033   1.331</code></pre>
+</div>
 </div>
 
 
