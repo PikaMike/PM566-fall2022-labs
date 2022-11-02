@@ -286,25 +286,170 @@ SQL could use /\* \*/ to indicate the comments
 
 Exercise 6.1 Use COUNT(\*) to count the number of rows in rental
 
+``` sql
+SELECT COUNT(*) AS count
+FROM rental
+LIMIT 10
+```
+
+| count |
+|------:|
+| 16044 |
+
+1 records
+
 Exercise 6.2 Use COUNT(\*) and GROUP BY to count the number of rentals
 for each customer_id
+
+``` sql
+SELECT customer_id, COUNT(*) AS count
+FROM rental
+GROUP by customer_id
+LIMIT 10
+```
+
+| customer_id | count |
+|:------------|------:|
+| 1           |    32 |
+| 2           |    27 |
+| 3           |    26 |
+| 4           |    22 |
+| 5           |    38 |
+| 6           |    28 |
+| 7           |    33 |
+| 8           |    24 |
+| 9           |    23 |
+| 10          |    25 |
+
+Displaying records 1 - 10
 
 Exercise 6.3 Repeat the previous query and sort by the count in
 descending order
 
+``` sql
+SELECT customer_id, COUNT(*) AS count
+FROM rental
+GROUP by customer_id 
+ORDER by count DESC
+LIMIT 10
+```
+
+| customer_id | count |
+|------------:|------:|
+|         148 |    46 |
+|         526 |    45 |
+|         236 |    42 |
+|         144 |    42 |
+|          75 |    41 |
+|         469 |    40 |
+|         197 |    40 |
+|         468 |    39 |
+|         178 |    39 |
+|         137 |    39 |
+
+Displaying records 1 - 10
+
 Exercise 6.4 Repeat the previous query but use HAVING to only keep the
 groups with 40 or more.
+
+``` sql
+SELECT customer_id, COUNT(*) AS count
+FROM rental
+GROUP by customer_id 
+HAVING COUNT(*) >= 40
+/* HAVING count >= 40 */
+ORDER by count DESC
+LIMIT 10
+```
+
+| customer_id | count |
+|------------:|------:|
+|         148 |    46 |
+|         526 |    45 |
+|         236 |    42 |
+|         144 |    42 |
+|          75 |    41 |
+|         469 |    40 |
+|         197 |    40 |
+
+7 records
 
 # Exercise 7
 
 The following query calculates a number of summary statistics for the
 payment table using MAX, MIN, AVG and SUM
 
+``` sql
+SELECT MAX(amount) AS maxpayment,
+       MIN(amount) AS minpayment,
+       AVG(amount) AS avgpayment,
+       SUM(amount) AS sumpayment
+FROM payment
+```
+
+| maxpayment | minpayment | avgpayment | sumpayment |
+|-----------:|-----------:|-----------:|-----------:|
+|      11.99 |       0.99 |   4.169775 |    4824.43 |
+
+1 records
+
 Exercise 7.1 Modify the above query to do those calculations for each
 customer_id
 
+``` sql
+SELECT customer_id, 
+       MAX(amount) AS maxpayment,
+       MIN(amount) AS minpayment,
+       AVG(amount) AS avgpayment,
+       SUM(amount) AS sumpayment
+FROM payment
+GROUP by customer_id
+```
+
+| customer_id | maxpayment | minpayment | avgpayment | sumpayment |
+|------------:|-----------:|-----------:|-----------:|-----------:|
+|           1 |       2.99 |       0.99 |   1.990000 |       3.98 |
+|           2 |       4.99 |       4.99 |   4.990000 |       4.99 |
+|           3 |       2.99 |       1.99 |   2.490000 |       4.98 |
+|           5 |       6.99 |       0.99 |   3.323333 |       9.97 |
+|           6 |       4.99 |       0.99 |   2.990000 |       8.97 |
+|           7 |       5.99 |       0.99 |   4.190000 |      20.95 |
+|           8 |       6.99 |       6.99 |   6.990000 |       6.99 |
+|           9 |       4.99 |       0.99 |   3.656667 |      10.97 |
+|          10 |       4.99 |       4.99 |   4.990000 |       4.99 |
+|          11 |       6.99 |       6.99 |   6.990000 |       6.99 |
+
+Displaying records 1 - 10
+
 Exercise 7.2 Modify the above query to only keep the customer_ids that
 have more then 5 payments
+
+``` sql
+SELECT customer_id, 
+       COUNT(*) AS count,
+       MAX(amount) AS maxpayment,
+       MIN(amount) AS minpayment,
+       AVG(amount) AS avgpayment,
+       SUM(amount) AS sumpayment
+FROM payment
+GROUP by customer_id
+HAVING count >= 5
+```
+
+| customer_id | count | maxpayment | minpayment | avgpayment | sumpayment |
+|------------:|------:|-----------:|-----------:|-----------:|-----------:|
+|           7 |     5 |       5.99 |       0.99 |       4.19 |      20.95 |
+|          14 |     5 |       9.99 |       0.99 |       4.19 |      20.95 |
+|          19 |     6 |       9.99 |       0.99 |       4.49 |      26.94 |
+|          44 |     5 |       4.99 |       0.99 |       2.59 |      12.95 |
+|          50 |     5 |       4.99 |       4.99 |       4.99 |      24.95 |
+|          53 |     6 |       9.99 |       0.99 |       4.49 |      26.94 |
+|          77 |     5 |       5.99 |       0.99 |       2.99 |      14.95 |
+|         109 |     7 |       7.99 |       0.99 |       3.99 |      27.93 |
+|         161 |     6 |       5.99 |       0.99 |       2.99 |      17.94 |
+|         176 |     5 |       7.99 |       0.99 |       4.39 |      21.95 |
+
+Displaying records 1 - 10
 
 # Cleanup
 
