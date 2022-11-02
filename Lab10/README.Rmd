@@ -82,40 +82,63 @@ ORDER by last_name
 
 Write a query against the rental table that returns the IDs of the customers who rented a film on July 5, 2005 (use the rental.rental_date column, and you can use the date() function to ignore the time component). Include a single row for each distinct customer ID.
 
-SELECT DISTINCT 
-FROM 
-WHERE date(___) = '2005-07-05'
+```{r}
+dbGetQuery(con,
+           "PRAGMA table_info(rental)")
+```
+
+```{sql, connection=con}
+SELECT DISTINCT customer_id, rental_date
+FROM rental
+WHERE date(rental_date) = '2005-07-05'
+```
 
 # Exercise 4
 
 Exercise 4.1
 Construct a query that retrives all rows from the payment table where the amount is either 1.99, 7.99, 9.99.
 
+```{sql, connection=con}
 SELECT *
-FROM ___
-WHERE ___ IN (1.99, 7.99, 9.99)
-Exercise 4.2
-Construct a query that retrives all rows from the payment table where the amount is greater then 5
+FROM payment
+WHERE amount IN (1.99, 7.99, 9.99)
+```
 
-SELECT *
-FROM 
-WHERE 
 Exercise 4.2
+Construct a query that retrieves all rows from the payment table where the amount is greater than 5
+
+```{sql, connection=con}
+SELECT *
+FROM payment
+WHERE amount > 5
+```
+
+Exercise 4.3
 Construct a query that retrives all rows from the payment table where the amount is greater then 5 and less then 8
 
+```{sql, connection=con}
 SELECT *
-FROM ___
-WHERE ___ AND ___
+FROM payment
+WHERE amount > 5 AND amount < 8
+```
 
 # Exercise 5
 
-Retrive all the payment IDs and their amount from the customers whose last name is ‘DAVIS’.
+Retrieve all the payment IDs and their amount from the customers whose last name is ‘DAVIS’.
 
-SELECT 
-FROM 
-  INNER JOIN 
-WHERE 
-AND 
+```{r}
+dbGetQuery(con,
+           "PRAGMA table_info(customer)")
+```
+
+```{sql, connection=con}
+SELECT a.customer_id, b.last_name, a.payment_id, a.amount
+FROM payment as a INNER JOIN customer as b 
+ON a.customer_id = b.customer_id
+WHERE last_name IN ('DAVIS')
+```
+
+SQL could use /* */ to indicate the comments
 
 # Exercise 6
 
@@ -141,7 +164,9 @@ Exercise 7.2
 Modify the above query to only keep the customer_ids that have more then 5 payments
 
 # Cleanup
+
 Run the following chunk to disconnect from the connection.
+
 ```{r}
 # clean up
 dbDisconnect(con)

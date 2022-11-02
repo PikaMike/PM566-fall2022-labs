@@ -134,27 +134,157 @@ customers who rented a film on July 5, 2005 (use the rental.rental_date
 column, and you can use the date() function to ignore the time
 component). Include a single row for each distinct customer ID.
 
-SELECT DISTINCT FROM WHERE date(\_\_\_) = ‘2005-07-05’
+``` r
+dbGetQuery(con,
+           "PRAGMA table_info(rental)")
+```
+
+    ##   cid         name    type notnull dflt_value pk
+    ## 1   0    rental_id INTEGER       0         NA  0
+    ## 2   1  rental_date    TEXT       0         NA  0
+    ## 3   2 inventory_id INTEGER       0         NA  0
+    ## 4   3  customer_id INTEGER       0         NA  0
+    ## 5   4  return_date    TEXT       0         NA  0
+    ## 6   5     staff_id INTEGER       0         NA  0
+    ## 7   6  last_update    TEXT       0         NA  0
+
+``` sql
+SELECT DISTINCT customer_id, rental_date
+FROM rental
+WHERE date(rental_date) = '2005-07-05'
+```
+
+| customer_id | rental_date         |
+|------------:|:--------------------|
+|         565 | 2005-07-05 22:49:24 |
+|         242 | 2005-07-05 22:51:44 |
+|          37 | 2005-07-05 22:56:33 |
+|          60 | 2005-07-05 22:57:34 |
+|         594 | 2005-07-05 22:59:53 |
+|           8 | 2005-07-05 23:01:21 |
+|         490 | 2005-07-05 23:02:37 |
+|         476 | 2005-07-05 23:05:17 |
+|         322 | 2005-07-05 23:05:44 |
+|         298 | 2005-07-05 23:08:53 |
+
+Displaying records 1 - 10
 
 # Exercise 4
 
 Exercise 4.1 Construct a query that retrives all rows from the payment
 table where the amount is either 1.99, 7.99, 9.99.
 
-SELECT \* FROM *** WHERE *** IN (1.99, 7.99, 9.99) Exercise 4.2
-Construct a query that retrives all rows from the payment table where
-the amount is greater then 5
+``` sql
+SELECT *
+FROM payment
+WHERE amount IN (1.99, 7.99, 9.99)
+```
 
-SELECT \* FROM WHERE Exercise 4.2 Construct a query that retrives all
-rows from the payment table where the amount is greater then 5 and less
-then 8
+| payment_id | customer_id | staff_id | rental_id | amount | payment_date               |
+|-----------:|------------:|---------:|----------:|-------:|:---------------------------|
+|      16050 |         269 |        2 |         7 |   1.99 | 2007-01-24 21:40:19.996577 |
+|      16056 |         270 |        1 |       193 |   1.99 | 2007-01-26 05:10:14.996577 |
+|      16081 |         282 |        2 |        48 |   1.99 | 2007-01-25 04:49:12.996577 |
+|      16103 |         294 |        1 |       595 |   1.99 | 2007-01-28 12:28:20.996577 |
+|      16133 |         307 |        1 |       614 |   1.99 | 2007-01-28 14:01:54.996577 |
+|      16158 |         316 |        1 |      1065 |   1.99 | 2007-01-31 07:23:22.996577 |
+|      16160 |         318 |        1 |       224 |   9.99 | 2007-01-26 08:46:53.996577 |
+|      16161 |         319 |        1 |        15 |   9.99 | 2007-01-24 23:07:48.996577 |
+|      16180 |         330 |        2 |       967 |   7.99 | 2007-01-30 17:40:32.996577 |
+|      16206 |         351 |        1 |      1137 |   1.99 | 2007-01-31 17:48:40.996577 |
 
-SELECT \* FROM *** WHERE *** AND \_\_\_ \# Exercise 5 Retrive all the
-payment IDs and their amount from the customers whose last name is
-‘DAVIS’.
+Displaying records 1 - 10
 
-SELECT FROM INNER JOIN WHERE AND \# Exercise 6 Exercise 6.1 Use
-COUNT(\*) to count the number of rows in rental
+Exercise 4.2 Construct a query that retrieves all rows from the payment
+table where the amount is greater than 5
+
+``` sql
+SELECT *
+FROM payment
+WHERE amount > 5
+```
+
+| payment_id | customer_id | staff_id | rental_id | amount | payment_date               |
+|-----------:|------------:|---------:|----------:|-------:|:---------------------------|
+|      16052 |         269 |        2 |       678 |   6.99 | 2007-01-28 21:44:14.996577 |
+|      16058 |         271 |        1 |      1096 |   8.99 | 2007-01-31 11:59:15.996577 |
+|      16060 |         272 |        1 |       405 |   6.99 | 2007-01-27 12:01:05.996577 |
+|      16061 |         272 |        1 |      1041 |   6.99 | 2007-01-31 04:14:49.996577 |
+|      16068 |         274 |        1 |       394 |   5.99 | 2007-01-27 09:54:37.996577 |
+|      16073 |         276 |        1 |       860 |  10.99 | 2007-01-30 01:13:42.996577 |
+|      16074 |         277 |        2 |       308 |   6.99 | 2007-01-26 20:30:05.996577 |
+|      16082 |         282 |        2 |       282 |   6.99 | 2007-01-26 17:24:52.996577 |
+|      16086 |         284 |        1 |      1145 |   6.99 | 2007-01-31 18:42:11.996577 |
+|      16087 |         286 |        2 |        81 |   6.99 | 2007-01-25 10:43:45.996577 |
+
+Displaying records 1 - 10
+
+Exercise 4.3 Construct a query that retrives all rows from the payment
+table where the amount is greater then 5 and less then 8
+
+``` sql
+SELECT *
+FROM payment
+WHERE amount > 5 AND amount < 8
+```
+
+| payment_id | customer_id | staff_id | rental_id | amount | payment_date               |
+|-----------:|------------:|---------:|----------:|-------:|:---------------------------|
+|      16052 |         269 |        2 |       678 |   6.99 | 2007-01-28 21:44:14.996577 |
+|      16060 |         272 |        1 |       405 |   6.99 | 2007-01-27 12:01:05.996577 |
+|      16061 |         272 |        1 |      1041 |   6.99 | 2007-01-31 04:14:49.996577 |
+|      16068 |         274 |        1 |       394 |   5.99 | 2007-01-27 09:54:37.996577 |
+|      16074 |         277 |        2 |       308 |   6.99 | 2007-01-26 20:30:05.996577 |
+|      16082 |         282 |        2 |       282 |   6.99 | 2007-01-26 17:24:52.996577 |
+|      16086 |         284 |        1 |      1145 |   6.99 | 2007-01-31 18:42:11.996577 |
+|      16087 |         286 |        2 |        81 |   6.99 | 2007-01-25 10:43:45.996577 |
+|      16092 |         288 |        2 |       427 |   6.99 | 2007-01-27 14:38:30.996577 |
+|      16094 |         288 |        2 |       565 |   5.99 | 2007-01-28 07:54:57.996577 |
+
+Displaying records 1 - 10
+
+# Exercise 5
+
+Retrieve all the payment IDs and their amount from the customers whose
+last name is ‘DAVIS’.
+
+``` r
+dbGetQuery(con,
+           "PRAGMA table_info(customer)")
+```
+
+    ##    cid        name    type notnull dflt_value pk
+    ## 1    0 customer_id INTEGER       0         NA  0
+    ## 2    1    store_id INTEGER       0         NA  0
+    ## 3    2  first_name    TEXT       0         NA  0
+    ## 4    3   last_name    TEXT       0         NA  0
+    ## 5    4       email    TEXT       0         NA  0
+    ## 6    5  address_id INTEGER       0         NA  0
+    ## 7    6  activebool    TEXT       0         NA  0
+    ## 8    7 create_date    TEXT       0         NA  0
+    ## 9    8 last_update    TEXT       0         NA  0
+    ## 10   9      active INTEGER       0         NA  0
+
+``` sql
+SELECT a.customer_id, b.last_name, a.payment_id, a.amount
+FROM payment as a INNER JOIN customer as b 
+ON a.customer_id = b.customer_id
+WHERE last_name IN ('DAVIS')
+```
+
+| customer_id | last_name | payment_id | amount |
+|------------:|:----------|-----------:|-------:|
+|           6 | DAVIS     |      16685 |   4.99 |
+|           6 | DAVIS     |      16686 |   2.99 |
+|           6 | DAVIS     |      16687 |   0.99 |
+
+3 records
+
+SQL could use /\* \*/ to indicate the comments
+
+# Exercise 6
+
+Exercise 6.1 Use COUNT(\*) to count the number of rows in rental
 
 Exercise 6.2 Use COUNT(\*) and GROUP BY to count the number of rentals
 for each customer_id
