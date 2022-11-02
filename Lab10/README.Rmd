@@ -8,10 +8,13 @@ always_allow_html: true
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(eval = TRUE)
+options(repos = c(CRAN = "http://cran.rstudio.com"))
 ```
 
 ```{r set-up}
 # install.packages(c("RSQLite", "DBI"))
+# if (!require(RSQLite)) install.packages(c("RSQLite"))
+# if (!require(DBI)) install.packages(c("DBI"))
 
 library(RSQLite)
 library(DBI)
@@ -44,6 +47,7 @@ dbGetQuery(con,
 ```
 
 # Exercise 1
+
 Retrive the actor ID, first name and last name for all actors using the actor table. Sort by last name and then by first name.
 
 ```{r}
@@ -51,6 +55,7 @@ dbGetQuery(con, "
  SELECT actor_id, first_name, last_name
  FROM actor
  ORDER by last_name, first_name
+ LIMIT 10
              ")
 ```
 
@@ -62,21 +67,27 @@ FROM actor
 ORDER by last_name, first_name
 ```
 
-
 # Exercise 2
+
 Retrive the actor ID, first name, and last name for actors whose last name equals ‘WILLIAMS’ or ‘DAVIS’.
 
-SELECT 
-FROM 
-WHERE ___ IN ('WILLIAMS', 'DAVIS')
+```{sql, connection=con}
+SELECT actor_id, first_name, last_name
+FROM actor
+WHERE last_name IN ('WILLIAMS', 'DAVIS')
+ORDER by last_name
+```
 
-Exercise 3
+# Exercise 3
+
 Write a query against the rental table that returns the IDs of the customers who rented a film on July 5, 2005 (use the rental.rental_date column, and you can use the date() function to ignore the time component). Include a single row for each distinct customer ID.
 
 SELECT DISTINCT 
 FROM 
 WHERE date(___) = '2005-07-05'
-Exercise 4
+
+# Exercise 4
+
 Exercise 4.1
 Construct a query that retrives all rows from the payment table where the amount is either 1.99, 7.99, 9.99.
 
@@ -95,7 +106,9 @@ Construct a query that retrives all rows from the payment table where the amount
 SELECT *
 FROM ___
 WHERE ___ AND ___
-Exercise 5
+
+# Exercise 5
+
 Retrive all the payment IDs and their amount from the customers whose last name is ‘DAVIS’.
 
 SELECT 
@@ -103,7 +116,9 @@ FROM
   INNER JOIN 
 WHERE 
 AND 
-Exercise 6
+
+# Exercise 6
+
 Exercise 6.1
 Use COUNT(*) to count the number of rows in rental
 
@@ -116,7 +131,7 @@ Repeat the previous query and sort by the count in descending order
 Exercise 6.4
 Repeat the previous query but use HAVING to only keep the groups with 40 or more.
 
-Exercise 7
+# Exercise 7
 The following query calculates a number of summary statistics for the payment table using MAX, MIN, AVG and SUM
 
 Exercise 7.1
