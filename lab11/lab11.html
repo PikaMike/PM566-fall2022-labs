@@ -735,7 +735,7 @@ dates every two weeks</p>
 # Map state, date, and new_cases to a matrix
 library(tidyr)
 cv_states_mat &lt;- cv_states %&gt;% select(state, date, new_cases) %&gt;% dplyr::filter(date&gt;as.Date(&quot;2022-06-15&quot;))
-cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = ________))
+cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = new_cases))
 rownames(cv_states_mat2) &lt;- cv_states_mat2$date
 cv_states_mat2$date &lt;- NULL
 cv_states_mat2 &lt;- as.matrix(cv_states_mat2)
@@ -747,8 +747,8 @@ plot_ly(x=colnames(cv_states_mat2), y=rownames(cv_states_mat2),
              showscale=T)
 
 # Repeat with newper100k
-cv_states_mat &lt;- cv_states %&gt;% select(state, date, newper100k) %&gt;% dplyr::filter(date&gt;as.Date(&quot;2021-06-15&quot;))
-cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = ________))
+cv_states_mat &lt;- cv_states %&gt;% select(state, date, newper100k) %&gt;% dplyr::filter(date&gt;as.Date(&quot;2022-06-15&quot;))
+cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = newper100k))
 rownames(cv_states_mat2) &lt;- cv_states_mat2$date
 cv_states_mat2$date &lt;- NULL
 cv_states_mat2 &lt;- as.matrix(cv_states_mat2)
@@ -759,10 +759,10 @@ plot_ly(x=colnames(cv_states_mat2), y=rownames(cv_states_mat2),
              showscale=T)
 
 # Create a second heatmap after filtering to only include dates every other week
-filter_dates &lt;- seq(as.Date(&quot;2021-06-15&quot;), as.Date(&quot;2021-11-01&quot;), by=________)
+filter_dates &lt;- seq(as.Date(&quot;2022-06-15&quot;), as.Date(&quot;2022-11-01&quot;), by=&quot;2 weeks&quot;)
 
 cv_states_mat &lt;- cv_states %&gt;% select(state, date, newper100k) %&gt;% filter(date %in% filter_dates)
-cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = ________))
+cv_states_mat2 &lt;- as.data.frame(pivot_wider(cv_states_mat, names_from = state, values_from = newper100k))
 rownames(cv_states_mat2) &lt;- cv_states_mat2$date
 cv_states_mat2$date &lt;- NULL
 cv_states_mat2 &lt;- as.matrix(cv_states_mat2)
@@ -787,7 +787,7 @@ this)</li>
 </ul>
 <pre class="r"><code>### For specified date
 
-pick.date = &quot;2021-10-15&quot;
+pick.date = &quot;2022-10-15&quot;
 
 # Extract the data for each state by its abbreviation
 cv_per100 &lt;- cv_states %&gt;% filter(date==pick.date) %&gt;% select(state, abb, newper100k, cases, deaths) # select data
@@ -857,7 +857,7 @@ fig_Today &lt;- fig
 
 
 ### Plot together 
-________(fig_pick.date, fig_Today, nrows = 2, margin = .05)</code></pre>
+subplot(fig_pick.date, fig_Today, nrows = 2, margin = .05)</code></pre>
 </div>
 </div>
 </div>
