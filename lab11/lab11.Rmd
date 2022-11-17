@@ -145,15 +145,10 @@ max(cv_states$date)
   - Hint: You can set `new_cases` equal to the difference between cases on date i and date i-1, starting on date i=2
   
 - Filter to dates after June 1, 2022
-
 - Use `plotly` for EDA: See if there are outliers or values that don't make sense for `new_cases` and `new_deaths`. Which states and which dates have strange values?
-
 - Correct outliers: Set negative values for `new_cases` or `new_deaths` to 0
-
 - Recalculate `cases` and `deaths` as cumulative sum of updated `new_cases` and `new_deaths`
-
 - Get the rolling average of new cases and new deaths to smooth over time
-
 - Inspect data again interactively
 
 ```{r}

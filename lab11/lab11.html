@@ -500,25 +500,24 @@ max(cv_states$date)</code></pre>
 <h3>4. Add <code>new_cases</code> and <code>new_deaths</code> and
 correct outliers</h3>
 <ul>
-<li><p>Add variables for new cases, <code>new_cases</code>, and new
-deaths, <code>new_deaths</code>:</p>
+<li>Add variables for new cases, <code>new_cases</code>, and new deaths,
+<code>new_deaths</code>:
 <ul>
 <li>Hint: You can set <code>new_cases</code> equal to the difference
 between cases on date i and date i-1, starting on date i=2</li>
 </ul></li>
-<li><p>Filter to dates after June 1, 2022</p></li>
-<li><p>Use <code>plotly</code> for EDA: See if there are outliers or
-values that don’t make sense for <code>new_cases</code> and
+<li>Filter to dates after June 1, 2022</li>
+<li>Use <code>plotly</code> for EDA: See if there are outliers or values
+that don’t make sense for <code>new_cases</code> and
 <code>new_deaths</code>. Which states and which dates have strange
-values?</p></li>
-<li><p>Correct outliers: Set negative values for <code>new_cases</code>
-or <code>new_deaths</code> to 0</p></li>
-<li><p>Recalculate <code>cases</code> and <code>deaths</code> as
-cumulative sum of updated <code>new_cases</code> and
-<code>new_deaths</code></p></li>
-<li><p>Get the rolling average of new cases and new deaths to smooth
-over time</p></li>
-<li><p>Inspect data again interactively</p></li>
+values?</li>
+<li>Correct outliers: Set negative values for <code>new_cases</code> or
+<code>new_deaths</code> to 0</li>
+<li>Recalculate <code>cases</code> and <code>deaths</code> as cumulative
+sum of updated <code>new_cases</code> and <code>new_deaths</code></li>
+<li>Get the rolling average of new cases and new deaths to smooth over
+time</li>
+<li>Inspect data again interactively</li>
 </ul>
 <pre class="r"><code># Add variables for new_cases and new_deaths:
 for (i in 1:length(state_list)) {
